@@ -30,12 +30,36 @@ function loadProgressHandler(loader, resource) {
     //console.log("loading: " + resource.name);
 }
 
+
 function setup(){
-    var sprite = new PIXI.Sprite( loader_.resources[testURL].texture);
+
+    var texture = new PIXI.Texture(PIXI.BaseTexture.fromImage(make_base()));
+    //var sprite = new PIXI.Sprite( loader_.resources[testURL].texture);
+    //texture.frame = rectangle;
+    var sprite = new PIXI.Sprite(texture);
 
     stage_.addChild(sprite);
     renderer_.render(stage_);
 }
+
+function make_base()
+{
+    base_image = new Image();
+    base_image.src = testURL;
+
+    return base_image.src;
+}
+
+/*var reader = new window.FileReader();
+reader.readAsDataURL(testURL);
+reader.onloadend = function() {
+    base64data = reader.result;
+    console.log(base64data);
+}*/
+
+var canvas = document.getElementById('canvas');
+var dataURL = canvas.toDataURL();
+console.log(dataURL);
 
 const ul = document.getElementById('finna');
 const url = 'https://api.finna.fi/v1/search?lookfor=sibelius&filter[]=online_boolean:%221%22&filter[]=format:%220/Image/%22';
