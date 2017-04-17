@@ -16,19 +16,16 @@ function create() {
   var test = game.add.sprite(200, 200, 'background', 1);
 }
 
-/*
 
 // Use Pixi js
-
-const ul = document.getElementById('finna');
 
 //render images with pixi.js
 var loader_ = new PIXI.loaders.Loader();
 var stage_ = new PIXI.Container();
-var renderer_ = PIXI.autoDetectRenderer(256, 256);
-document.body.appendChild(renderer_.view);
+var renderer_ = new PIXI.CanvasRenderer(500, 500);
+document.getElementById("pixi").appendChild(renderer_.view);
 
-var testURL = 'https://api.finna.fi/Cover/Show?id=musketti.M012%3AHK6869%3A1.2&index=0&size=large';
+var testURL = "https://api.finna.fi/Cover/Show?id=muusa.urn%3Auuid%3A7682B120-4F8E-4210-AD4D-1B118BA7699E&index=0&size=large";
 
 // var testURL = 'player.png';
 
@@ -54,21 +51,27 @@ base_image.src = testURL;
 
 function imageOnLoad(event) {
   console.log(event.target);
-}
-let img = new Image();
-img.crossOrigin = '';
-img.src = 'https://api.finna.fi/Cover/Show?id=musketti.M012%3AHK6869%3A1.2&index=0&size=large';
-img.onload = function() {
-  var c = document.createElement('canvas');
-  var ctx = c.getContext("2d");
-  ctx.drawImage(img, 0, 0);
-  var imgURL = c.toDataURL();
-  // var texture = new PIXI.Texture(PIXI.BaseTexture.fromImage(base_image));
-  var sprite = new PIXI.Sprite.fromImage(imgURL);
-
+  var base = new PIXI.BaseTexture(base_image),
+    texture = new PIXI.Texture(base),
+    sprite = new PIXI.Sprite(texture);
   stage_.addChild(sprite);
   renderer_.render(stage_);
 }
+
+// let img = new Image();
+// img.crossOrigin = '';
+// img.src = 'https://api.finna.fi/Cover/Show?id=musketti.M012%3AHK6869%3A1.2&index=0&size=large';
+// img.onload = function() {
+//   var c = document.createElement('canvas');
+//   var ctx = c.getContext("2d");
+//   ctx.drawImage(img, 0, 0);
+//   var imgURL = c.toDataURL();
+//   // var texture = new PIXI.Texture(PIXI.BaseTexture.fromImage(base_image));
+//   var sprite = new PIXI.Sprite.fromImage(imgURL);
+//
+//   stage_.addChild(sprite);
+//   renderer_.render(stage_);
+// }
 //
 // var texture = new PIXI.Texture(PIXI.BaseTexture.fromImage(base_image));
 // var sprite = new PIXI.Sprite(texture);
@@ -101,20 +104,18 @@ function setup() {
   stage_.addChild(sprite);
   renderer_.render(stage_);
 }
-
-const url = 'https://api.finna.fi/v1/search?lookfor=sibelius&filter[]=online_boolean:%221%22&filter[]=format:%220/Image/%22';
-
-let imageUrl = fetch(url)
-.then((resp) => resp.json())
-.then(function (data) {
-  let architectures = data.records;
-  let building = architectures[0];
-  let imgUrl = "http://api.finna.fi" + building.images[0];
-  // console.log(imgUrl);
-  return imgUrl;
-})
-.catch(function (error) {
-  console.log(JSON.stringify(error));
-});
-
-  */
+//
+// const url = 'https://api.finna.fi/v1/search?lookfor=sibelius&filter[]=online_boolean:%221%22&filter[]=format:%220/Image/%22';
+//
+// let imageUrl = fetch(url)
+// .then((resp) => resp.json())
+// .then(function (data) {
+//   let architectures = data.records;
+//   let building = architectures[0];
+//   let imgUrl = "http://api.finna.fi" + building.images[0];
+//   // console.log(imgUrl);
+//   return imgUrl;
+// })
+// .catch(function (error) {
+//   console.log(JSON.stringify(error));
+// });
