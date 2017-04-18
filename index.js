@@ -4,7 +4,8 @@
 
 var loader_ = new PIXI.loaders.Loader();
 var stage_ = new PIXI.Container();
-var renderer_ = new PIXI.CanvasRenderer(500, 500);
+var renderer_ = new PIXI.CanvasRenderer(500, 500, {antialias: false, transparent: false, resolution: 1});
+renderer_.backgroundColor = 0x061639;
 document.getElementById("pixi").appendChild(renderer_.view);
 
 var testURL = "https://api.finna.fi/Cover/Show?id=muusa.urn%3Auuid%3A7682B120-4F8E-4210-AD4D-1B118BA7699E&index=0&size=large";
