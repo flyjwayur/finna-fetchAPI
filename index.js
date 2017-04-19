@@ -2,10 +2,15 @@
  * Created by soo on 12.4.2017.
  */
 
+games = {}
+games.puzzle = {}
+
+
+var pieces_ = [];
 var loader_ = new PIXI.loaders.Loader();
-var stage_ = new PIXI.Container();
+var container_ = new PIXI.Container();
 var renderer_ = new PIXI.CanvasRenderer(500, 500);
-document.getElementById("pixi").appendChild(renderer_.view);
+//document.getElementById("pixi").appendChild(renderer_.view);
 
 var testURL = "https://api.finna.fi/Cover/Show?id=muusa.urn%3Auuid%3A7682B120-4F8E-4210-AD4D-1B118BA7699E&index=0&size=large";
 
@@ -17,23 +22,24 @@ function imageOnLoad(event) {
     console.log(event.target);
     console.log("base_image width & height "+ base_image.width, base_image.height);
 
-    var rectangle = new PIXI.Rectangle(100,100,100,100);
+    //var rectangle = new PIXI.Rectangle(100,100,100,100);
     //Tell the texture to use that rectangular section
     var base = new PIXI.BaseTexture(base_image),
         texture = new PIXI.Texture(base);
-    texture.frame = rectangle;
+    //texture.frame = rectangle;
     var sprite = new PIXI.Sprite(texture);
+    sprite.width = 192;
+    sprite.height = 192;
 
-    myFunction();
-    stage_.addChild(sprite);
-    renderer_.render(stage_);
+    //myFunction();
+    container_.addChild(sprite);
+    renderer_.render(this.container_);
 }
 
 
 
-
+var flipSuggestions = 0;
 var countFlips = function(){
-    var flipSuggestions = 0;
     flipSuggestions++;
     alert("I have been called " + flipSuggestions + " times")
     return flipSuggestions;
@@ -45,9 +51,87 @@ function myFunction()
        if(Math.random()< 0.9){
            if(Math.random() < 0.8){
                countFlips();
+               alert("Hei! I have been called " + countFlips() + " times")
            }
        }
    }
 }
+
+/*Game*/
+
+games.puzzle.prototype.instantiatePuzzlePiecesAndControlButtons = function(imageWidth, imageHeight, totalRow, totalCol){
+    var pieceWidth = imageWidth/totalCol,
+        pieceHeight = imageHeight/totalRow;
+
+    for (var row = 0; row  < totalRow; row++) {
+        pieces_.push([]);
+        for (var col = 0; col < totalCol; col++) {
+            pieces_[row].push(
+                this.createSpriteFromSpriteSheet(pieceWidth, pieceHeight, row, col,
+                    totalRow, totalCol)
+            );
+        }
+    }
+};
+
+
+games.puzzle.prototype.createSpriteFromSpriteSheet = function(width, height, row, col, totalRow, totalCol) {
+    var rectangle = new PIXI.Rectangle(width * col, height * row, width, height);
+    //Tell the texture to use that rectangular section
+    // var texture = new PIXI.Texture(PIXI.BaseTexture.fromImage("assets/tileset.png"));
+    //var base = this.base;
+    var texture = new PIXI.Texture(this.base);
+    texture.frame = rectangle;
+    var piece = new PIXI.Sprite(texture);
+    piece.width = 32;
+    piece.height = 32;
+
+    // Center all pieces
+    piece.x = container_.width / 2 - piece.width / 2 - (width * totalCol);
+    piece.y = container_.height / 2 - piece.height / 2 - (height * totalRow);
+
+    // Scale all pieces
+    piece.scale.x = 2;
+    piece.scale.y = 2;
+
+    // Spread pieces evenly
+    // Widen the space between pieces after scaling the pieces
+    piece.x = piece.x + (width * col * 2);
+    piece.y = piece.y + (height * row * 2);
+
+    // boolean flag for solution checking
+    piece.flipped = false;
+
+    // add piece to stage
+    container_.addChild(piece);
+
+    return piece;
+}
+
+
+
+games.puzzle.prototype.imageOnLoad = function (base_image) {
+    return function (event) {
+        console.log(event.target);
+        this.base = new PIXI.BaseTexture(base_image);
+    };
+};
+
+
+games.puzzle.prototype.onAssetsLoaded_ = function() {
+    this.totalPuzzleRows = 6;
+    this.totalPuzzleColumns = 6;
+
+    //Get Architecture images from Fingna API
+    var testURL = "https://api.finna.fi/Cover/Show?id=muusa.urn%3Auuid%3A7682B120-4F8E-4210-AD4D-1B118BA7699E&index=0&size=large";
+    var base_image = new Image();
+    base_image.addEventListener("load", this.imageOnLoad(base_image));
+    base_image.src = testURL;
+
+    this.instantiatePuzzlePiecesAndControlButtons(192, 192, this.totalPuzzleRows, this.totalPuzzleColumns);
+
+    document.body.appendChild(renderer_.view);
+};
+
 
 
