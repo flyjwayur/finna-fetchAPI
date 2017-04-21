@@ -21,7 +21,7 @@ games.Game = function(){
 };
 
 console.log(games.prototype);
-games.prototype.instantiatePuzzlePiecesAndControlButtons = function(imageWidth, imageHeight, totalRow, totalCol){
+games.Game.prototype.instantiatePuzzlePiecesAndControlButtons = function(imageWidth, imageHeight, totalRow, totalCol){
     var pieceWidth = imageWidth/totalCol,
         pieceHeight = imageHeight/totalRow;
 
@@ -36,7 +36,7 @@ games.prototype.instantiatePuzzlePiecesAndControlButtons = function(imageWidth, 
 };
 
 
-games.prototype.createSpriteFromSpriteSheet = function(width, height, row, col, totalRow, totalCol) {
+games.Game.prototype.createSpriteFromSpriteSheet = function(width, height, row, col, totalRow, totalCol) {
     var rectangle = new PIXI.Rectangle(width * col, height* row, width, height);
     //Tell the texture to use that rectangular section
     // var texture = new PIXI.Texture(PIXI.BaseTexture.fromImage("assets/tileset.png"));
@@ -71,7 +71,7 @@ games.prototype.createSpriteFromSpriteSheet = function(width, height, row, col, 
 
 
 
-games.prototype.imageOnLoad = function (base_image) {
+games.Game.prototype.imageOnLoad = function (base_image) {
     return function (event) {
         console.log(event.target);
         var base = new PIXI.BaseTexture(base_image);
@@ -82,7 +82,7 @@ games.prototype.imageOnLoad = function (base_image) {
 };
 
 
-games.prototype.onAssetsLoaded_ = function() {
+games.Game.prototype.onAssetsLoaded_ = function() {
     this.totalPuzzleRows = 6;
     this.totalPuzzleColumns = 6;
 
