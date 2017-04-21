@@ -11,16 +11,54 @@ var games = {};
 games.Game = function(){
 
   //can constructor function only have properties?
- this.pieces_ = [];
- this.loader_ = new PIXI.loaders.Loader();
- this.loader_.add('mushroom2.png')
-             .once(this.onAssetsLoaded_);
- this.container_ = new PIXI.Container();
- this.renderer_ = new PIXI.CanvasRenderer(500, 500);
+  this.pieces_ = [];
+  this.loader_ = new PIXI.loaders.Loader();
+  this.loader_.add('mushroom', 'mushroom2.png')
+             .load(this.onAssetsLoaded_.bind(this));
+  this.container_ = new PIXI.Container();
+  this.renderer_ = new PIXI.CanvasRenderer(500, 500);
+
+  this.totalPuzzleRows = 6;
+  this.totalPuzzleColumns = 6;
+
+  console.log("constructor");
+  console.log(this);
+  console.log(this.constructor);
 
 };
 
-console.log(games.prototype);
+games.Game.prototype.onAssetsLoaded_ = function(loader, resources) {
+  console.log("assetLoaded");
+  console.log(this);
+
+  //Get Architecture images from Fingna API
+  var testURL = "https://api.finna.fi/Cover/Show?id=muusa.urn%3Auuid%3A7682B120-4F8E-4210-AD4D-1B118BA7699E&index=0&size=large";
+  var base_image = new Image();
+  base_image.addEventListener("load", this.imageOnLoad(base_image, this.container_, this.renderer_));
+  base_image.src = testURL;
+
+  // this.instantiatePuzzlePiecesAndControlButtons(192, 192, this.totalPuzzleRows, this.totalPuzzleColumns);
+  document.body.appendChild(this.renderer_.view);
+
+};
+
+games.Game.prototype.imageOnLoad = function (base_image, container, renderer) {
+
+  return function (event) {
+    console.log(event.target);
+    var base = new PIXI.BaseTexture(base_image);
+    var texture = new PIXI.Texture(base);
+    var piece = new PIXI.Sprite(texture);
+    container.addChild(piece);
+    console.log(piece);
+
+    renderer.render(container);
+  };
+};
+
+var game = new games.Game();
+
+/*
 games.Game.prototype.instantiatePuzzlePiecesAndControlButtons = function(imageWidth, imageHeight, totalRow, totalCol){
     var pieceWidth = imageWidth/totalCol,
         pieceHeight = imageHeight/totalRow;
@@ -70,37 +108,11 @@ games.Game.prototype.createSpriteFromSpriteSheet = function(width, height, row, 
 }
 
 
+*/
 
-games.Game.prototype.imageOnLoad = function (base_image) {
-    return function (event) {
-        console.log(event.target);
-        var base = new PIXI.BaseTexture(base_image);
-        var texture = new PIXI.Texture(base);
-        var piece = new PIXI.Sprite(texture);
-        console.log("piece "+ piece);
-    };
-};
+/*
 
-
-games.Game.prototype.onAssetsLoaded_ = function() {
-    this.totalPuzzleRows = 6;
-    this.totalPuzzleColumns = 6;
-
-    //Get Architecture images from Fingna API
-    var testURL = "https://api.finna.fi/Cover/Show?id=muusa.urn%3Auuid%3A7682B120-4F8E-4210-AD4D-1B118BA7699E&index=0&size=large";
-    var base_image = new Image();
-    base_image.addEventListener("load", this.imageOnLoad(base_image));
-    base_image.src = testURL;
-
-    this.instantiatePuzzlePiecesAndControlButtons(192, 192, this.totalPuzzleRows, this.totalPuzzleColumns);
-
-    document.body.appendChild(this.renderer_.view);
-
-};
-
-var game = new games.Game();
-
-/*//document.getElementById("pixi").appendChild(renderer_.view);
+//document.getElementById("pixi").appendChild(renderer_.view);
 
  var testURL = "https://api.finna.fi/Cover/Show?id=muusa.urn%3Auuid%3A7682B120-4F8E-4210-AD4D-1B118BA7699E&index=0&size=large";
 
