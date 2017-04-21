@@ -13,7 +13,7 @@ games = function(){
   //can constructor function only have properties?
 
  this.pieces_ = [];
- this.loader_ = new PIXI.loader;
+ this.loader_ = new PIXI.loaders.Loader();
  this.loader_.add('mushroom2.png')
              .once(this.onAssetsLoaded_);
  this.container_ = new PIXI.Container();
