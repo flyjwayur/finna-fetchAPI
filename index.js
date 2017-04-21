@@ -8,10 +8,9 @@
 
 var games = {};
 
-games = function(){
+games.Game = function(){
 
   //can constructor function only have properties?
-
  this.pieces_ = [];
  this.loader_ = new PIXI.loaders.Loader();
  this.loader_.add('mushroom2.png')
@@ -19,7 +18,8 @@ games = function(){
  this.container_ = new PIXI.Container();
  this.renderer_ = new PIXI.CanvasRenderer(500, 500);
 
-}
+};
+
 console.log(games.prototype);
 games.prototype.instantiatePuzzlePiecesAndControlButtons = function(imageWidth, imageHeight, totalRow, totalCol){
     var pieceWidth = imageWidth/totalCol,
@@ -94,15 +94,11 @@ games.prototype.onAssetsLoaded_ = function() {
 
     this.instantiatePuzzlePiecesAndControlButtons(192, 192, this.totalPuzzleRows, this.totalPuzzleColumns);
 
-    this.backgroundSprite_ = PIXI.Sprite.fromImage('mushroom2.png');
     document.body.appendChild(this.renderer_.view);
-
 
 };
 
-
-
-
+var game = new games.Game();
 
 /*//document.getElementById("pixi").appendChild(renderer_.view);
 
