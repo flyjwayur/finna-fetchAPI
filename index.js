@@ -2,25 +2,26 @@
  * Created by soo on 12.4.2017.
  */
 
+'use strict';
 
 /*Game*/
 
-games = {}
-games.puzzle = {}
+var games = {};
 
-
-games.puzzle = function(){
+games = function(){
 
   //can constructor function only have properties?
 
  this.pieces_ = [];
- //this.loader_ = new PIXI.loaders.Loader();
+ this.loader_ = new PIXI.loader;
+ this.loader_.add('mushroom2.png')
+             .once(this.onAssetsLoaded_);
  this.container_ = new PIXI.Container();
  this.renderer_ = new PIXI.CanvasRenderer(500, 500);
 
 }
-console.log(games.puzzle.prototype);
-games.puzzle.prototype.instantiatePuzzlePiecesAndControlButtons = function(imageWidth, imageHeight, totalRow, totalCol){
+console.log(games.prototype);
+games.prototype.instantiatePuzzlePiecesAndControlButtons = function(imageWidth, imageHeight, totalRow, totalCol){
     var pieceWidth = imageWidth/totalCol,
         pieceHeight = imageHeight/totalRow;
 
@@ -35,8 +36,7 @@ games.puzzle.prototype.instantiatePuzzlePiecesAndControlButtons = function(image
 };
 
 
-
-games.puzzle.prototype.createSpriteFromSpriteSheet = function(width, height, row, col, totalRow, totalCol) {
+games.prototype.createSpriteFromSpriteSheet = function(width, height, row, col, totalRow, totalCol) {
     var rectangle = new PIXI.Rectangle(width * col, height* row, width, height);
     //Tell the texture to use that rectangular section
     // var texture = new PIXI.Texture(PIXI.BaseTexture.fromImage("assets/tileset.png"));
@@ -71,15 +71,18 @@ games.puzzle.prototype.createSpriteFromSpriteSheet = function(width, height, row
 
 
 
-games.puzzle.prototype.imageOnLoad = function (base_image) {
+games.prototype.imageOnLoad = function (base_image) {
     return function (event) {
         console.log(event.target);
-        this.base = new PIXI.BaseTexture(base_image);
+        var base = new PIXI.BaseTexture(base_image);
+        var texture = new PIXI.Texture(base);
+        var piece = new PIXI.Sprite(texture);
+        console.log("piece "+ piece);
     };
 };
 
 
-games.puzzle.prototype.onAssetsLoaded_ = function() {
+games.prototype.onAssetsLoaded_ = function() {
     this.totalPuzzleRows = 6;
     this.totalPuzzleColumns = 6;
 
