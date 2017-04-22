@@ -11,6 +11,7 @@ var games = {};
 games.Game = function(){
 
   //can constructor function only have properties?
+  this.apiImage_ = null;
   this.pieces_ = [];
   this.loader_ = new PIXI.loaders.Loader();
   this.loader_.add('mushroom', 'mushroom2.png')
@@ -33,55 +34,59 @@ games.Game.prototype.onAssetsLoaded_ = function(loader, resources) {
 
   //Get Architecture images from Fingna API
   var testURL = "https://api.finna.fi/Cover/Show?id=muusa.urn%3Auuid%3A7682B120-4F8E-4210-AD4D-1B118BA7699E&index=0&size=large";
-  var base_image = new Image();
-  base_image.addEventListener("load", this.imageOnLoad(base_image, this.container_, this.renderer_));
-  base_image.src = testURL;
-
-  // this.instantiatePuzzlePiecesAndControlButtons(192, 192, this.totalPuzzleRows, this.totalPuzzleColumns);
-  document.body.appendChild(this.renderer_.view);
+  this.apiImage_ = new Image();
+  this.apiImage_.addEventListener("load", this.imageOnLoad.bind(this));
+  this.apiImage_.src = testURL;
 
 };
 
-games.Game.prototype.imageOnLoad = function (base_image, container, renderer) {
+games.Game.prototype.imageOnLoad = function (event) {
 
-  return function (event) {
-    console.log(event.target);
-    var base = new PIXI.BaseTexture(base_image);
-    var texture = new PIXI.Texture(base);
-    var piece = new PIXI.Sprite(texture);
-    container.addChild(piece);
-    console.log(piece);
+    // console.log(event.target);
+    // var base = new PIXI.BaseTexture(this.apiImage_);
+    // var texture = new PIXI.Texture(base);
+    // sprite = new PIXI.Sprite(texture);
+    // this.container_.addChild(sprite);
+    console.log(this.apiImage_);
+    this.instantiatePuzzlePiecesAndControlButtons(192, 192, this.totalPuzzleRows, this.totalPuzzleColumns);
 
-    renderer.render(container);
-  };
 };
 
 var game = new games.Game();
 
-/*
+
 games.Game.prototype.instantiatePuzzlePiecesAndControlButtons = function(imageWidth, imageHeight, totalRow, totalCol){
     var pieceWidth = imageWidth/totalCol,
         pieceHeight = imageHeight/totalRow;
 
     for (var row = 0; row  < totalRow; row++) {
-        pieces_.push([]);
+        this.pieces_.push([]);
         for (var col = 0; col < totalCol; col++) {
-            pieces_[row].push(
+            this.pieces_[row].push(
                 this.createSpriteFromSpriteSheet(pieceWidth, pieceHeight, row, col, totalRow, totalCol)
             );
         }
     }
+
+  this.renderer_.render(this.container_);
+  document.body.appendChild(this.renderer_.view);
 };
 
 
 games.Game.prototype.createSpriteFromSpriteSheet = function(width, height, row, col, totalRow, totalCol) {
     var rectangle = new PIXI.Rectangle(width * col, height* row, width, height);
-    //Tell the texture to use that rectangular section
+
+    // Tell the texture to use that rectangular section
+
     // var texture = new PIXI.Texture(PIXI.BaseTexture.fromImage("assets/tileset.png"));
-    //var base = this.base;
-    var texture = new PIXI.Texture(this.base);
-    texture.frame = rectangle;
-    var piece = new PIXI.Sprite(texture);
+    // var base = this.base;
+  var base = new PIXI.BaseTexture(this.apiImage_),
+    texture = new PIXI.Texture(base);
+
+  texture.frame = rectangle;
+
+  var piece = new PIXI.Sprite(texture);
+
     piece.width = 32;
     piece.height = 32;
 
@@ -98,8 +103,11 @@ games.Game.prototype.createSpriteFromSpriteSheet = function(width, height, row, 
     piece.x = piece.x + (width * col * 2);
     piece.y = piece.y + (height * row * 2);
 
-    // boolean flag for solution checking
-    piece.flipped = false;
+  if (Math.random() < 0.25) {
+    piece.visible = false;
+  }
+
+  console.log(piece);
 
     // add piece to stage
     this.container_.addChild(piece);
@@ -108,7 +116,7 @@ games.Game.prototype.createSpriteFromSpriteSheet = function(width, height, row, 
 }
 
 
-*/
+
 
 /*
 
