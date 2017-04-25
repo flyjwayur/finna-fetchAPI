@@ -158,12 +158,12 @@ games.Game.prototype.displayFlipSuggestionMessage = function () {
 };
 
 function flipPiece(piece) {
-    piece.flipped = !piece.flipped;
-    if (piece.scale.x == 0) {
-        piece.scale.x = 2;
-    } else {
-        piece.scale.x = 0;
-    }
+    // piece.flipped = !piece.flipped;
+    // if (piece.scale.x == 0) {
+    //     piece.scale.x = 2;
+    // } else {
+    //     piece.scale.x = 0;
+    // }
 }
 
 
