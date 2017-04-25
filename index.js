@@ -144,13 +144,13 @@ games.Game.prototype.createSpriteFromSpriteSheet = function(width, height, row, 
 
 
 games.Game.prototype.displayFlipSuggestionMessage = function () {
-    var message = new PIXI.Text(
-        "If you can find the solution with a less flip, there will be more points\n" +
-        "Hint! Try to flip as few as these flips :D :" + this.flipCount_,
-        {fontFamily: "Arial", fontSize: 30, fill: "yellow"}
-    );
-    message.position.set( this.canvasWidth_ / 4, this.canvasHeight_ / 2);
-    this.container_.addChild(message);
+    // var message = new PIXI.Text(
+    //     "If you can find the solution with a less flip, there will be more points\n" +
+    //     "Hint! Try to flip as few as these flips :D :" + this.flipCount_,
+    //     {fontFamily: "Arial", fontSize: 30, fill: "yellow"}
+    // );
+    // message.position.set( this.canvasWidth_ / 4, this.canvasHeight_ / 2);
+    // this.container_.addChild(message);
 };
 
 function flipPiece(piece) {
