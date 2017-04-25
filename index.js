@@ -74,36 +74,36 @@ games.Game.prototype.instantiatePuzzlePiecesAndControlButtons = function(imageWi
             );
         }
     }
-
-
-    // flip random rows
-    for (row = 0; row  < totalRow; row++) {
-        if (Math.random() < 0.5) {
-            for (col = 0; col < totalCol; col++) {
-                flipPiece(this.pieces_[row][col]);
-            }
-            this.flipCount_++;
-        }
-    }
-    // flip random cols
-    for (col = 0; col  < totalCol; col++) {
-        if (Math.random() < 0.5) {
-            for (row = 0; row < totalRow; row++) {
-                flipPiece(this.pieces_[row][col]);
-            }
-            this.flipCount_++;
-        }
-    }
-
-    // randomly flip diagonal or not
-    if (Math.random() < 0.5) {
-        for (var i  = 0; i  < totalCol; i++) {
-            flipPiece(this.pieces_[this.pieces_.length - i - 1][i]);
-        }
-        this.flipCount_++;
-    }
-
-    this.displayFlipSuggestionMessage();
+    //
+    //
+    // // flip random rows
+    // for (row = 0; row  < totalRow; row++) {
+    //     if (Math.random() < 0.5) {
+    //         for (col = 0; col < totalCol; col++) {
+    //             flipPiece(this.pieces_[row][col]);
+    //         }
+    //         this.flipCount_++;
+    //     }
+    // }
+    // // flip random cols
+    // for (col = 0; col  < totalCol; col++) {
+    //     if (Math.random() < 0.5) {
+    //         for (row = 0; row < totalRow; row++) {
+    //             flipPiece(this.pieces_[row][col]);
+    //         }
+    //         this.flipCount_++;
+    //     }
+    // }
+    //
+    // // randomly flip diagonal or not
+    // if (Math.random() < 0.5) {
+    //     for (var i  = 0; i  < totalCol; i++) {
+    //         flipPiece(this.pieces_[this.pieces_.length - i - 1][i]);
+    //     }
+    //     this.flipCount_++;
+    // }
+    //
+    // this.displayFlipSuggestionMessage();
   this.renderer_.render(this.container_);
   document.body.appendChild(this.renderer_.view);
 };
