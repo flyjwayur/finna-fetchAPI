@@ -129,10 +129,6 @@ games.Game.prototype.createSpriteFromSpriteSheet = function(width, height, row, 
     piece.x = this.container_.width / 2 - piece.width / 2 - (width * totalCol);
     piece.y = this.container_.height / 2 - piece.height / 2 - (height * totalRow);
 
-    // Scale all pieces
-    piece.scale.x = 2;
-    piece.scale.y = 2;
-
     // Spread pieces evenly
     // Widen the space between pieces after scaling the pieces
     piece.x = piece.x + (width * col * 2);
