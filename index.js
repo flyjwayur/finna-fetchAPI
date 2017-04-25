@@ -21,19 +21,17 @@ games.Game = function(){
   this.canvasWidth_ = window.innerWidth;
   this.canvasHeight_ = window.innerHeight;
 
+  // this decide the puzzle size
+  this.puzzleWidth = 300;
+  this.puzzleHeight = 300;
+
   this.totalPuzzleRows = 6;
   this.totalPuzzleColumns = 6;
   this.flipCount_ = 0;
 
-  console.log("constructor");
-  console.log(this);
-  console.log(this.constructor);
-
 };
 
 games.Game.prototype.onAssetsLoaded_ = function(loader, resources) {
-  console.log("assetLoaded");
-  console.log(this);
 
   //Get Architecture images from Fingna API
   var testURL = "https://api.finna.fi/Cover/Show?id=muusa.urn%3Auuid%3A7682B120-4F8E-4210-AD4D-1B118BA7699E&index=0&size=large";
@@ -44,39 +42,27 @@ games.Game.prototype.onAssetsLoaded_ = function(loader, resources) {
 };
 
 games.Game.prototype.imageOnLoad = function (event) {
+  // var imageXRatio = this.apiImage_.width / this.puzzleWidth,
+  //     imageYRatio = this.apiImage_.height / this.puzzleHeight;
+  // var XScaleRate = 1 / imageXRatio,
+  //   YScaleRate = 1 / imageYRatio;
+  // console.log(XScaleRate + "   " + YScaleRate);
+  // this.apiImage_.style.width = XScaleRate + '%';
+  // this.apiImage_.style.width = '1%';
+  // this.apiImage_.style.height = YScaleRate + '%';
+  // this.apiImage_.style.height = '1%';
 
-    console.log(event.target);
-    // var base = new PIXI.BaseTexture(this.apiImage_);
-    // var texture = new PIXI.Texture(base);
-    // sprite = new PIXI.Sprite(texture);
-    // this.container_.addChild(sprite);
-    console.log(this.apiImage_);
-    console.log("apiImage width & height: " + this.apiImage_.width + " " + this.apiImage_.height)
-    this.apiImage_.width = 192;
-    this.apiImage_.height = 192;
-    this.instantiatePuzzlePiecesAndControlButtons(this.apiImage_.width, this.apiImage_.height, this.totalPuzzleRows, this.totalPuzzleColumns);
-    console.log("After setting the apiImage width & height : " + this.apiImage_.width + " " + this.apiImage_.height)
-
+    this.instantiatePuzzlePiecesAndControlButtons.bind(this)(this.totalPuzzleRows, this.totalPuzzleColumns);
 };
 
-var game = new games.Game();
-
-
-games.Game.prototype.instantiatePuzzlePiecesAndControlButtons = function(imageWidth, imageHeight, totalRow, totalCol){
-    var pieceWidth = imageWidth/totalCol,
-        pieceHeight = imageHeight/totalRow;
-
-    console.log(imageWidth);
-    console.log(imageHeight);
-    console.log(this.apiImage_.width);
-    console.log(this.apiImage_.height);
-
-
+games.Game.prototype.instantiatePuzzlePiecesAndControlButtons = function(totalRow, totalCol){
+    var pieceWidth = Math.floor(this.apiImage_.width / totalCol),
+        pieceHeight = Math.floor(this.apiImage_.height / totalRow);
     for (var row = 0; row  < totalRow; row++) {
         this.pieces_.push([]);
         for (var col = 0; col < totalCol; col++) {
             this.pieces_[row].push(
-                this.createSpriteFromSpriteSheet(pieceWidth, pieceHeight, row, col, totalRow, totalCol)
+                this.createSpriteFromSpriteSheet.bind(this)(pieceWidth, pieceHeight, row, col, totalRow, totalCol)
             );
         }
     }
@@ -84,37 +70,45 @@ games.Game.prototype.instantiatePuzzlePiecesAndControlButtons = function(imageWi
   document.body.appendChild(this.renderer_.view);
 };
 
-
 games.Game.prototype.createSpriteFromSpriteSheet = function(width, height, row, col, totalRow, totalCol) {
+
+  // little bit of math. changing image size directly or piece size before making sprite just crops the image
+  // so this is inevitable
+  var imageXRatio = this.apiImage_.width / this.puzzleWidth,
+    imageYRatio = this.apiImage_.height / this.puzzleHeight;
+  var XScaleRate = 1 / imageXRatio,
+    YScaleRate = 1 / imageYRatio;
+
     var rectangle = new PIXI.Rectangle(width * col, height* row, width, height);
 
     // Tell the texture to use that rectangular section
-
-    // var texture = new PIXI.Texture(PIXI.BaseTexture.fromImage("assets/tileset.png"));
-    // var base = this.base;
   var base = new PIXI.BaseTexture(this.apiImage_),
     texture = new PIXI.Texture(base);
     texture.frame = rectangle;
   var piece = new PIXI.Sprite(texture);
     piece.width = width;
     piece.height = height;
+    piece.scale.x = XScaleRate;
+    piece.scale.y = YScaleRate;
 
     console.log("piece width & height: "+ piece.width + " " + piece.height);
 
     // Center all pieces
-    piece.x = this.container_.width / 2 - piece.width / 2 - (width * totalCol);
-    piece.y = this.container_.height / 2 - piece.height / 2 - (height * totalRow);
-
+    // NOTE: using container width for centering is wrong, canvas width height is the correct one for using
+    // console.log (this.container_.width + " " + width + " " + totalCol);
+    // console.log (this.container_.height + " " + height + " " + totalRow);
     // Spread pieces evenly
     // Widen the space between pieces after scaling the pieces
-    piece.x = piece.x + (width * col * 2);
-    piece.y = piece.y + (height * row * 2);
+    piece.x = piece.width * col;
+    piece.y = piece.height * row;
 
-  console.log(piece);
+    // make half of the piece invisible
+  if (( col + row ) % 2 == 0 ) {
+    piece.visible = false;
+  }
 
     // add piece to stage
     this.container_.addChild(piece);
-
     return piece;
 }
 
@@ -138,5 +132,6 @@ function flipPiece(piece) {
     // }
 }
 
+var game = new games.Game();
 
-// python
+// python -m SimpleHTTPServer
