@@ -17,10 +17,13 @@ games.Game = function(){
   this.loader_.add('mushroom', 'mushroom2.png')
              .load(this.onAssetsLoaded_.bind(this));
   this.container_ = new PIXI.Container();
-  this.renderer_ = new PIXI.CanvasRenderer(500, 500);
+  this.renderer_ = new PIXI.CanvasRenderer(window.innerWidth, window.innerHeight);
+  this.canvasWidth_ = window.innerWidth;
+  this.canvasHeight_ = window.innerHeight;
 
   this.totalPuzzleRows = 6;
   this.totalPuzzleColumns = 6;
+  this.flipCount_ = 0;
 
   console.log("constructor");
   console.log(this);
@@ -42,13 +45,17 @@ games.Game.prototype.onAssetsLoaded_ = function(loader, resources) {
 
 games.Game.prototype.imageOnLoad = function (event) {
 
-    // console.log(event.target);
+    console.log(event.target);
     // var base = new PIXI.BaseTexture(this.apiImage_);
     // var texture = new PIXI.Texture(base);
     // sprite = new PIXI.Sprite(texture);
     // this.container_.addChild(sprite);
     console.log(this.apiImage_);
-    this.instantiatePuzzlePiecesAndControlButtons(192, 192, this.totalPuzzleRows, this.totalPuzzleColumns);
+    console.log("apiImage width & height: " + this.apiImage_.width + " " + this.apiImage_.height)
+    this.apiImage_.width = 192;
+    this.apiImage_.height = 192;
+    this.instantiatePuzzlePiecesAndControlButtons(this.apiImage_.width, this.apiImage_.height, this.totalPuzzleRows, this.totalPuzzleColumns);
+    console.log("After setting the apiImage width & height : " + this.apiImage_.width + " " + this.apiImage_.height)
 
 };
 
@@ -68,6 +75,35 @@ games.Game.prototype.instantiatePuzzlePiecesAndControlButtons = function(imageWi
         }
     }
 
+
+    // flip random rows
+    for (row = 0; row  < totalRow; row++) {
+        if (Math.random() < 0.5) {
+            for (col = 0; col < totalCol; col++) {
+                flipPiece(this.pieces_[row][col]);
+            }
+            this.flipCount_++;
+        }
+    }
+    // flip random cols
+    for (col = 0; col  < totalCol; col++) {
+        if (Math.random() < 0.5) {
+            for (row = 0; row < totalRow; row++) {
+                flipPiece(this.pieces_[row][col]);
+            }
+            this.flipCount_++;
+        }
+    }
+
+    // randomly flip diagonal or not
+    if (Math.random() < 0.5) {
+        for (var i  = 0; i  < totalCol; i++) {
+            flipPiece(this.pieces_[this.pieces_.length - i - 1][i]);
+        }
+        this.flipCount_++;
+    }
+
+    this.displayFlipSuggestionMessage();
   this.renderer_.render(this.container_);
   document.body.appendChild(this.renderer_.view);
 };
@@ -82,13 +118,12 @@ games.Game.prototype.createSpriteFromSpriteSheet = function(width, height, row, 
     // var base = this.base;
   var base = new PIXI.BaseTexture(this.apiImage_),
     texture = new PIXI.Texture(base);
-
-  texture.frame = rectangle;
-
+    texture.frame = rectangle;
   var piece = new PIXI.Sprite(texture);
+    piece.width = 16;
+    piece.height = 16;
 
-    piece.width = 32;
-    piece.height = 32;
+    console.log("piece width & height: "+ piece.width + " " + piece.height);
 
     // Center all pieces
     piece.x = this.container_.width / 2 - piece.width / 2 - (width * totalCol);
@@ -116,52 +151,23 @@ games.Game.prototype.createSpriteFromSpriteSheet = function(width, height, row, 
 }
 
 
+games.Game.prototype.displayFlipSuggestionMessage = function () {
+    var message = new PIXI.Text(
+        "If you can find the solution with a less flip, there will be more points\n" +
+        "Hint! Try to flip as few as these flips :D :" + this.flipCount_,
+        {fontFamily: "Arial", fontSize: 30, fill: "yellow"}
+    );
+    message.position.set( this.canvasWidth_ / 4, this.canvasHeight_ / 2);
+    this.container_.addChild(message);
+};
+
+function flipPiece(piece) {
+    piece.flipped = !piece.flipped;
+    if (piece.scale.x == 0) {
+        piece.scale.x = 2;
+    } else {
+        piece.scale.x = 0;
+    }
+}
 
 
-/*
-
-//document.getElementById("pixi").appendChild(renderer_.view);
-
- var testURL = "https://api.finna.fi/Cover/Show?id=muusa.urn%3Auuid%3A7682B120-4F8E-4210-AD4D-1B118BA7699E&index=0&size=large";
-
- let base_image = new Image();
- base_image.addEventListener("load", imageOnLoad);
- base_image.src = testURL;
-
- function imageOnLoad(event) {
- console.log(event.target);
- console.log("base_image width & height "+ base_image.width, base_image.height);
-
- //var rectangle = new PIXI.Rectangle(100,100,100,100);
- //Tell the texture to use that rectangular section
- var base = new PIXI.BaseTexture(base_image),
- texture = new PIXI.Texture(base);
- //texture.frame = rectangle;
- var sprite = new PIXI.Sprite(texture);
- sprite.width = 192;
- sprite.height = 192;
-
- //myFunction();
- container_.addChild(sprite);
- renderer_.render(this.container_);
- }
-
- var flipSuggestions = 0;
- var countFlips = function(){
- flipSuggestions++;
- alert("I have been called " + flipSuggestions + " times")
- return flipSuggestions;
- }
-
- function myFunction()
- {
- for(var row = 0; row < 6; row++){
- if(Math.random()< 0.9){
- if(Math.random() < 0.8){
- countFlips();
- alert("Hei! I have been called " + countFlips() + " times")
- }
- }
- }
- }
- */
