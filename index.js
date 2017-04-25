@@ -120,8 +120,8 @@ games.Game.prototype.createSpriteFromSpriteSheet = function(width, height, row, 
     texture = new PIXI.Texture(base);
     texture.frame = rectangle;
   var piece = new PIXI.Sprite(texture);
-    piece.width = 16;
-    piece.height = 16;
+    piece.width = width;
+    piece.height = height;
 
     console.log("piece width & height: "+ piece.width + " " + piece.height);
 
@@ -137,10 +137,6 @@ games.Game.prototype.createSpriteFromSpriteSheet = function(width, height, row, 
     // Widen the space between pieces after scaling the pieces
     piece.x = piece.x + (width * col * 2);
     piece.y = piece.y + (height * row * 2);
-
-  if (Math.random() < 0.25) {
-    piece.visible = false;
-  }
 
   console.log(piece);
 
