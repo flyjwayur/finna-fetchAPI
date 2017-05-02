@@ -20,7 +20,6 @@ games.Game = function(){
   this.renderer_ = new PIXI.CanvasRenderer(window.innerWidth, window.innerHeight);
   this.canvasWidth_ = window.innerWidth;
   this.canvasHeight_ = window.innerHeight;
-
   // this decide the puzzle size
   this.puzzleWidth = 300;
   this.puzzleHeight = 300;
@@ -102,25 +101,46 @@ games.Game.prototype.createSpriteFromSpriteSheet = function(width, height, row, 
     piece.x = piece.width * col;
     piece.y = piece.height * row;
 
-    // make half of the piece invisible
-  if (( col + row ) % 2 == 0 ) {
-    piece.visible = false;
-  }
+    if(((row + col) % 2) == 0){
+        piece.visible = false;
+    }
+
+    piece.interactive = true;
+
+    piece.on('click', (event) => {
+        console.log(event.target);
+        console.log(event);
+        event.target.visible = false;
+        this.renderer_.render(this.container_);
+        if(this.checkPuzzleIsSolved()){
+            this.afterGameTypeNameCheckPointsMessage();
+        }
+    });
 
     // add piece to stage
     this.container_.addChild(piece);
     return piece;
 }
 
+games.Game.prototype.checkPuzzleIsSolved = function(){
+  for(var i = 0; i < this.pieces_.length; i ++){
+    for(var j =0; j< this.pieces_.length; j++){
+      if(this.pieces_[i][j].visible == false)
+       return true;
+    }
+  }
+  return false;
+};
 
-games.Game.prototype.displayFlipSuggestionMessage = function () {
-    // var message = new PIXI.Text(
-    //     "If you can find the solution with a less flip, there will be more points\n" +
-    //     "Hint! Try to flip as few as these flips :D :" + this.flipCount_,
-    //     {fontFamily: "Arial", fontSize: 30, fill: "yellow"}
-    // );
-    // message.position.set( this.canvasWidth_ / 4, this.canvasHeight_ / 2);
-    // this.container_.addChild(message);
+
+games.Game.prototype.afterGameTypeNameCheckPointsMessage = function () {
+     var message = new PIXI.Text(
+         "Fabulous :) Now the puzzle is solved\n" +
+         "Please type your name. Check the points and rank :D :" ,
+         {fontFamily: "Arial", fontSize: 30, fill: "yellow"}
+     );
+     message.position.set( this.canvasWidth_ / 4, this.canvasHeight_ / 2);
+     this.container_.addChild(message);
 };
 
 function flipPiece(piece) {
